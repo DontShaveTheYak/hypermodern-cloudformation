@@ -3,7 +3,7 @@ Description: "Creates an S3 bucket to store logs."
 
 Parameters:
   BucketPrefix:
-    Type: String 
+    Type: String
     Description: The name of the Application or Project using this bucket.
     MinLength: 2
     ConstraintDescription: "use only lower case letters or numbers"
@@ -33,7 +33,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
-      BucketName: 
+      BucketName:
         !Sub ${BucketPrefix}-logs-${AWS::Region}
 
 Outputs:
