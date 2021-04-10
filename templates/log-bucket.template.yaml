@@ -32,6 +32,7 @@ Resources:
     Condition: RetainBucket
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName:
         !Sub ${BucketPrefix}-logs-${AWS::Region}
