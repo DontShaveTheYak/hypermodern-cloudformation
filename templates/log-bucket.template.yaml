@@ -21,21 +21,76 @@ Conditions:
   DeleteBucket: !Equals [ !Ref KeepBucket, "FALSE" ]
 
 Resources:
+
+  LogsBucketPolicy:
+    Condition: DeleteBucket
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref LogsBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:PutObject'
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref LogsBucket
+                - /*
+            Principal: !Sub arn:aws:iam::${AWS::AccountId}:root
+
   LogsBucket:
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: "This template will later serve to create a audit bucket with retain on delete."
     Condition: DeleteBucket
     Type: AWS::S3::Bucket
     Properties:
       BucketName:
         !Sub ${BucketPrefix}-logs-${AWS::Region}
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - BucketKeyEnabled: true
+            ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  RetainLogsBucketPolicy:
+    Condition: RetainBucket
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref RetainLogsBucket
+      PolicyDocument:
+        Statement:
+          - Action:
+              - 's3:PutObject'
+            Effect: Allow
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref RetainLogsBucket
+                - /*
+            Principal: !Sub arn:aws:iam::${AWS::AccountId}:root
 
   RetainLogsBucket:
     Condition: RetainBucket
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: "This template will later serve to create a audit bucket with retain on delete."
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     UpdateReplacePolicy: Retain
     Properties:
       BucketName:
         !Sub ${BucketPrefix}-logs-${AWS::Region}
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - BucketKeyEnabled: true
+            ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
 
 Outputs:
   LogsBucketName:
