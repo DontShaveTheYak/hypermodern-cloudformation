@@ -47,7 +47,7 @@ def test_ephemeral_bucket(template_path: Path):
 
     assert attached_bucket == 'LogsBucket'
     assert 'LogsBucket/*' in statement['Resource']
-    assert template.AccountId in statement['Principal']
+    assert template.AccountId in statement['Principal']['AWS']
 
     # Test outputs
     bucket_output = result['Outputs']['LogsBucketName']
@@ -90,7 +90,7 @@ def test_retains_bucket(template_path: Path):
 
     assert attached_bucket == 'RetainLogsBucket'
     assert 'LogsBucket/*' in statement['Resource']
-    assert template.AccountId in statement['Principal']
+    assert template.AccountId in statement['Principal']['AWS']
 
     # Test outputs
     bucket_output = result['Outputs']['LogsBucketName']

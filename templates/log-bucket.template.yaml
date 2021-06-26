@@ -37,7 +37,8 @@ Resources:
               - - 'arn:aws:s3:::'
                 - !Ref LogsBucket
                 - /*
-            Principal: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
 
   LogsBucket:
     Metadata:
@@ -71,7 +72,8 @@ Resources:
               - - 'arn:aws:s3:::'
                 - !Ref RetainLogsBucket
                 - /*
-            Principal: !Sub arn:aws:iam::${AWS::AccountId}:root
+            Principal:
+              AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
 
   RetainLogsBucket:
     Condition: RetainBucket
